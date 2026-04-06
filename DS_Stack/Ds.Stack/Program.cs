@@ -1,3 +1,5 @@
 ﻿using Ds.Stack;
 
-Operation.Run();
+Operation operation = new Operation();
+
+operation.Run();

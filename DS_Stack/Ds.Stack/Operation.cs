@@ -6,61 +6,67 @@ namespace Ds.Stack
 {
     internal class Operation
     {
-        private static Stack<Employee>? _employees = default;
+        private Stack<Employee>? _employees = default;
 
         public Operation()
         {
             _employees = new Stack<Employee>();
         }
 
-        private static (int Id, string Name, int Age, string City) GetEmployeeFromUser()
+        private static (int Id, string Name, int Age, string City) GetNewEmployeeInformationFromUser()
         {
-            Console.WriteLine("Enter Employee Details...");
+            Console.WriteLine("\n\nEnter Employee Details...\n");
 
-            Console.WriteLine("Employee Id: ");
+            Console.Write("Employee Id: ");
 
             /* Read Employee ID From User */
             var id = int.TryParse(Console.ReadLine(), out int employeeId);
 
-            Console.WriteLine("Employee Name: ");
+            Console.Write("\nEmployee Name: ");
 
             /* Read Employee Name From User */
             var name = Console.ReadLine();
 
-            Console.WriteLine("Employee Age: ");
+            Console.Write("\nEmployee Age: ");
 
             /* Read Employee Age From User */
             var age = Convert.ToInt32(Console.ReadLine());
 
-            Console.WriteLine("Employee City: ");
+            Console.Write("\nEmployee City: ");
 
             /* Read Employee City From User */
             var city = Console.ReadLine();
 
             return (employeeId, name, age, city);
         }
-        
-        private static IEnumerable<Employee> AddEmployee()
+
+        private IEnumerable<Employee> AddEmployee()
         {
-            var employee = GetEmployeeFromUser();
+            var employee = GetNewEmployeeInformationFromUser();
 
             _employees?.Push(new Employee() { Id = employee.Id, Name = employee.Name, Age = employee.Age, City = employee.City });
 
             return _employees;
         }
 
-        private static IEnumerable<Employee> RemoveEmployee()
+        private IEnumerable<Employee> RemoveEmployee()
         {
-            if (_employees.Any())
+            if (!_employees.Any())
             {
-                _employees.Pop();
+                Console.WriteLine("No Employee Found!");
             }
 
+            _employees.Pop();
             return _employees;
         }
 
-        private static void GetEmployee()
+        private void GetEmployeesDetail()
         {
+            if (!_employees.Any())
+            {
+                Console.WriteLine("No Employee Found!");
+                return;
+            }
             foreach (var employee in _employees)
             {
                 Console.WriteLine("Id: " + employee.Id + " Name: " + employee.Name + " Age: " + employee.Age + " City: " + employee.City);
@@ -68,11 +74,66 @@ namespace Ds.Stack
             }
         }
 
-        internal static void Run()
+        private void GetTopEmployeeByName()
         {
-            var employees = GetEmployee();
+            if (!_employees.Any())
+            {
+                Console.WriteLine("No Employee Found!");
+            }
 
-            Console.WriteLine("Count: " + employees.Count());
+            Employee topEmployee = _employees.Peek();
+            Console.WriteLine("Top Employee: " + topEmployee.Name);
+        }
+
+        private void GetChoiceDetail()
+        {
+            Console.WriteLine(" 1. Add Employee \n 2. Get Top Employee \n 3. Get Employee Details \n 4. Remove Employee \n 5. Exit \n");
+
+            Console.Write("Enter Your Choice: ");
+            var choice = Convert.ToInt32(Console.ReadLine());
+
+            switch (choice)
+            {
+                case 1:
+                    var addedEmployees = AddEmployee();
+                    Console.WriteLine($"Added Employees...\n");
+
+                    foreach (var employee in addedEmployees)
+                    {
+                        Console.Write("Id: " + employee.Id + " Name: " + employee.Name + " Age: " + employee.Age + " City: " + employee.City);
+                        Console.WriteLine();
+                    }
+
+                    break;
+                case 2:
+                    GetTopEmployeeByName();
+                    break;
+                case 3:
+                    GetEmployeesDetail();
+                    break;
+                case 4:
+                    var remainingEmployee = RemoveEmployee();
+                    Console.WriteLine("Remaining Employees After Removing...");
+
+                    foreach (var employee in remainingEmployee)
+                    {
+                        Console.Write("Id: " + employee.Id + " Name: " + employee.Name + " Age: " + employee.Age + " City: " + employee.City);
+                        Console.WriteLine();
+                    }
+
+                    break;
+                case 5:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Invalid Choice");
+                    break;
+            }
+        }
+
+        internal  void Run()
+        {
+            GetChoiceDetail();
         }
     }
 }

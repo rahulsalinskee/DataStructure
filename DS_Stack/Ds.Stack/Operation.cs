@@ -7,20 +7,48 @@ namespace Ds.Stack
     internal class Operation
     {
         private Stack<Employee>? _employees = default;
+        private int id = 0;
 
         public Operation()
         {
             _employees = new Stack<Employee>();
         }
 
-        private static (int Id, string Name, int Age, string City) GetNewEmployeeInformationFromUser()
+        private int GetTopEmployeeId()
+        {
+            bool isStackEmpty = !_employees.Any();
+
+            try
+            {
+                if (isStackEmpty)
+                {
+                    id = _employees?.Peek()?.Id ?? 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                id++;
+            }
+            return id;
+        }
+
+        private (int Id, string Name, int Age, string City) GetNewEmployeeInformationFromUser()
         {
             Console.WriteLine("\n\nEnter Employee Details...\n");
 
-            Console.Write("Employee Id: ");
+            //Console.Write("Employee Id: ");
 
             /* Read Employee ID From User */
-            var id = int.TryParse(Console.ReadLine(), out int employeeId);
+            //var isIdInteger = int.TryParse(Console.ReadLine(), out int employeeId);
+
+            //if (!isIdInteger)
+            //{
+            int employeeId = GetTopEmployeeId();
+            //}
 
             Console.Write("\nEmployee Name: ");
 
@@ -39,6 +67,7 @@ namespace Ds.Stack
 
             return (employeeId, name, age, city);
         }
+
 
         private IEnumerable<Employee> AddEmployee()
         {
@@ -60,78 +89,98 @@ namespace Ds.Stack
             return _employees;
         }
 
-        private void GetEmployeesDetail()
+        private void DisplayEmployeesDetail()
         {
             if (!_employees.Any())
             {
-                Console.WriteLine("No Employee Found!");
+                Console.Write("No Employee Found!");
                 return;
             }
-            foreach (var employee in _employees)
-            {
-                Console.WriteLine("Id: " + employee.Id + " Name: " + employee.Name + " Age: " + employee.Age + " City: " + employee.City);
-                Console.WriteLine();
-            }
+            DisplayEmployeeDetails(employees: _employees);
         }
 
-        private void GetTopEmployeeByName()
+        private void DisplayTopEmployeeByName()
         {
             if (!_employees.Any())
             {
-                Console.WriteLine("No Employee Found!");
+                Console.Write("No Employee Found!");
             }
 
             Employee topEmployee = _employees.Peek();
-            Console.WriteLine("Top Employee: " + topEmployee.Name);
+
+            Console.WriteLine("\nTop Employee Name: " + topEmployee.Name);
+            Console.WriteLine();
         }
 
         private void GetChoiceDetail()
         {
-            Console.WriteLine(" 1. Add Employee \n 2. Get Top Employee \n 3. Get Employee Details \n 4. Remove Employee \n 5. Exit \n");
+            int choice = default;
 
-            Console.Write("Enter Your Choice: ");
-            var choice = Convert.ToInt32(Console.ReadLine());
-
-            switch (choice)
+            do
             {
-                case 1:
-                    var addedEmployees = AddEmployee();
-                    Console.WriteLine($"Added Employees...\n");
+                Console.WriteLine(" 1. Add Employee \n 2. Get Top Employee \n 3. Get Employee Details \n 4. Remove Employee \n 5. Exit \n");
+                Console.Write("Enter Your Choice: ");
+                var isValidChoice = int.TryParse(Console.ReadLine(), out choice);
 
-                    foreach (var employee in addedEmployees)
+                if (isValidChoice)
+                {
+                    switch (choice)
                     {
-                        Console.Write("Id: " + employee.Id + " Name: " + employee.Name + " Age: " + employee.Age + " City: " + employee.City);
-                        Console.WriteLine();
+                        case 1:
+                            var addedEmployees = AddEmployee();
+                            Console.WriteLine($"\nAdded Employee Details...");
+                            Console.WriteLine("--------- --------- ---------\n");
+                            DisplayEmployeeDetails(employees: addedEmployees);
+                            Console.WriteLine("--------- --------- ---------\n");
+                            break;
+
+                        case 2:
+                            DisplayTopEmployeeByName();
+                            break;
+
+                        case 3:
+                            Console.WriteLine();
+                            DisplayEmployeesDetail();
+                            break;
+
+                        case 4:
+                            var remainingEmployee = RemoveEmployee();
+                            Console.WriteLine("\nRemaining Employees After Removing...\n");
+                            DisplayEmployeeDetails(employees: remainingEmployee);
+                            break;
+
+                        case 5:
+                            Environment.Exit(0);
+                            break;
+
+                        default:
+                            Console.WriteLine("Invalid Choice");
+                            break;
                     }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Choice!");
+                }
+            }
+            while (choice != 5);
+        }
 
-                    break;
-                case 2:
-                    GetTopEmployeeByName();
-                    break;
-                case 3:
-                    GetEmployeesDetail();
-                    break;
-                case 4:
-                    var remainingEmployee = RemoveEmployee();
-                    Console.WriteLine("Remaining Employees After Removing...");
+        private void DisplayEmployeeDetails(IEnumerable<Employee> employees)
+        {
+            if (!employees.Any())
+            {
+                Console.Write("\n--- No Employee Found! ---");
+            }
 
-                    foreach (var employee in remainingEmployee)
-                    {
-                        Console.Write("Id: " + employee.Id + " Name: " + employee.Name + " Age: " + employee.Age + " City: " + employee.City);
-                        Console.WriteLine();
-                    }
-
-                    break;
-                case 5:
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.WriteLine("Invalid Choice");
-                    break;
+            foreach (var employee in employees)
+            {
+                Console.Write("Id: " + employee.Id + " | Name: " + employee.Name + " | Age: " + employee.Age + " | City: " + employee.City);
+                Console.WriteLine("\n");
             }
         }
 
-        internal  void Run()
+        internal void Run()
         {
             GetChoiceDetail();
         }

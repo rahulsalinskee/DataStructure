@@ -7,10 +7,11 @@ namespace Ds.Stack
     internal class Operation
     {
         private Stack<Employee>? _employees = default;
-        private int id = 0;
+        private int _id = default;
 
         public Operation()
         {
+            _id = 0;
             _employees = new Stack<Employee>();
         }
 
@@ -22,7 +23,7 @@ namespace Ds.Stack
             {
                 if (isStackEmpty)
                 {
-                    id = _employees?.Peek()?.Id ?? 0;
+                    _id = _employees?.Peek()?.Id ?? 0;
                 }
             }
             catch (Exception ex)
@@ -31,24 +32,16 @@ namespace Ds.Stack
             }
             finally
             {
-                id++;
+                _id++;
             }
-            return id;
+            return _id;
         }
 
         private (int Id, string Name, int Age, string City) GetNewEmployeeInformationFromUser()
         {
             Console.WriteLine("\n\nEnter Employee Details...\n");
 
-            //Console.Write("Employee Id: ");
-
-            /* Read Employee ID From User */
-            //var isIdInteger = int.TryParse(Console.ReadLine(), out int employeeId);
-
-            //if (!isIdInteger)
-            //{
             int employeeId = GetTopEmployeeId();
-            //}
 
             Console.Write("\nEmployee Name: ");
 
@@ -172,11 +165,13 @@ namespace Ds.Stack
             {
                 Console.Write("\n--- No Employee Found! ---");
             }
-
-            foreach (var employee in employees)
+            else
             {
-                Console.Write("Id: " + employee.Id + " | Name: " + employee.Name + " | Age: " + employee.Age + " | City: " + employee.City);
-                Console.WriteLine("\n");
+                foreach (var employee in employees)
+                {
+                    Console.Write("Id: " + employee.Id + " | Name: " + employee.Name + " | Age: " + employee.Age + " | City: " + employee.City);
+                    Console.WriteLine("\n");
+                }
             }
         }
 

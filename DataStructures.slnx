@@ -1,8 +1,9 @@
 <Solution>
-  <Folder Name="/Ds_Queue/">
+  <Folder Name="/DataStructure/" />
+  <Folder Name="/DataStructure/Ds_Queue/">
     <Project Path="DS_Queue/Ds.Queue/Ds.Queue.csproj" />
   </Folder>
-  <Folder Name="/DS_Stack/">
+  <Folder Name="/DataStructure/DS_Stack/">
     <Project Path="DS_Stack/Ds.Stack/Ds.Stack.csproj" />
   </Folder>
 </Solution>
